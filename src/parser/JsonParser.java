@@ -1,15 +1,23 @@
 package parser;
 
-class JsonParser {
-    private final String jsonString;
-    private int position;
+import java.util.ArrayList;
 
-    JsonParser(String jsonString) {
-        this.jsonString = jsonString;
-        this.position = 0;
+class JsonParser {
+    private static final JsonParser INSTANCE = new JsonParser();
+
+    static JsonParser getInstance() {
+        return INSTANCE;
     }
 
-    void getObjectFromString(JsonObject object) {
+    private String jsonString;
+    private int position;
+
+    private JsonParser() {}
+
+    void parseObjectFromString(String jsonString, JsonObject object) {
+        this.jsonString = jsonString;
+        this.position = 0;
+
         skipUnmeaningfulChars();
 
         if (jsonString.charAt(position) != '{') {
@@ -17,6 +25,19 @@ class JsonParser {
         }
 
         handleKeyParsing(object);
+    }
+
+    ArrayList<Object> getJsonArrayContentsFromString(String jsonString) {
+        this.jsonString = jsonString;
+        this.position = 0;
+
+        skipUnmeaningfulChars();
+
+        if (jsonString.charAt(position) != '[') {
+            throw new IllegalArgumentException("JSON string doesn't represent a valid JSON");
+        }
+
+        return parseAndReturnArray().getElements();
     }
 
     private void handleKeyParsing(JsonObject object) {
