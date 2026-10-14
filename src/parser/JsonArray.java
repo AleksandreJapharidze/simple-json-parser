@@ -21,28 +21,75 @@ public class JsonArray {
         elements.add(objectValue);
     }
 
+    public JsonObject getJsonObject(int index) {
+        Object element = getElement(index);
+        if (!(element instanceof JsonObject)) {
+            throw new IllegalArgumentException("Element at index " + index + " is not a JsonObject");
+        }
+        return (JsonObject) element;
+    }
+
     public void add(String stringValue) {
         elements.add(stringValue);
+    }
+
+    public String getString(int index) {
+        Object element = getElement(index);
+        if (!(element instanceof String)) {
+            throw new IllegalArgumentException("Element at index " + index + " is not a String");
+        }
+        return (String) element;
     }
 
     public void add(int intValue) {
         elements.add(intValue);
     }
 
+    public int getInt(int index) {
+        Object element = getElement(index);
+        if (!(element instanceof Integer)) {
+            throw new IllegalArgumentException("Element at index " + index + " is not an Integer");
+        }
+        return (Integer) element;
+    }
+
     public void add(boolean booleanValue) {
         elements.add(booleanValue);
+    }
+
+    public boolean getBoolean(int index) {
+        Object element = getElement(index);
+        if (!(element instanceof Boolean)) {
+            throw new IllegalArgumentException("Element at index " + index + " is not a Boolean");
+        }
+        return (Boolean) element;
     }
 
     public void add(JsonArray arrayValue) {
         elements.add(arrayValue);
     }
 
+    public JsonArray getJsonArray(int index) {
+        Object element = getElement(index);
+        if (!(element instanceof JsonArray)) {
+            throw new IllegalArgumentException("Element at index " + index + " is not a JsonArray");
+        }
+        return (JsonArray) element;
+    }
+
     public void addNull() {
         elements.add(null);
     }
 
-    public Object get(int index) {
-        return elements.get(index);
+    private Object getElement(int index) {
+        if (index < 0 || index >= elements.size()) {
+            throw new IndexOutOfBoundsException("Index out of bounds");
+        }
+        Object element = elements.get(index);
+        if (element == null) {
+            throw new IllegalArgumentException("Element at index " + index + " is null");
+        }
+        return element;
     }
 
     @Override

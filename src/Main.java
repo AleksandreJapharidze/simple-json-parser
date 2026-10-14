@@ -164,7 +164,8 @@ void main() {
               ],
               {},
               [],
-              ["string", {"key": "value"}, []]
+              ["string", {"key": "value"}, []],
+              [{}]
             ]""";
 
     JsonArray array = new JsonArray(jsonString1);

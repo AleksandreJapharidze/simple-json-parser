@@ -6,13 +6,15 @@ public class JsonObject {
     private final HashMap<String, Object> jsonData;
 
     public JsonObject(String jsonString) {
-        this.jsonData = new HashMap<>();
-
-        JsonParser.getInstance().parseObjectFromString(jsonString, this);
+        this.jsonData = JsonParser.getInstance().getJsonObjectDataFromString(jsonString);
     }
 
     JsonObject() {
         this.jsonData = new HashMap<>();
+    }
+
+    HashMap<String, Object> getJsonData() {
+        return jsonData;
     }
 
     public void put(String key, String stringValue) {
@@ -24,20 +26,13 @@ public class JsonObject {
     }
 
     public String getString(String key) {
-        if (key == null) {
-            throw new IllegalArgumentException("Key must be of type String");
-        }
-
-        Object value = jsonData.get(key);
-        if (value == null) {
-            throw new IllegalArgumentException("Value is null");
-        }
+        Object value = getValue(key);
 
         if (!(value instanceof String)) {
             throw new IllegalArgumentException("Value is not of type String");
         }
 
-        return (String) jsonData.get(key);
+        return (String) value;
     }
 
     public void put(String key, int integerValue) {
@@ -48,25 +43,14 @@ public class JsonObject {
         jsonData.put(key, integerValue);
     }
 
-    public Integer getInt(String key) {
-        if (!jsonData.containsKey(key)) {
-            throw new IllegalArgumentException("Key does not exist");
-        }
-
-        Object value = jsonData.get(key);
-        if (value == null) {
-            throw new IllegalArgumentException("Value is null");
-        }
+    public int getInt(String key) {
+        Object value = getValue(key);
 
         if (!(value instanceof Integer)) {
             throw new IllegalArgumentException("Value is not of type Integer");
         }
 
-        return (Integer) jsonData.get(key);
-    }
-
-    public void putNull(String key) {
-        jsonData.put(key, null);
+        return (int) value;
     }
 
     public void put(String key, boolean booleanValue) {
@@ -78,20 +62,13 @@ public class JsonObject {
     }
 
     public boolean getBoolean(String key) {
-        if (!jsonData.containsKey(key)) {
-            throw new IllegalArgumentException("Key does not exist");
-        }
-
-        Object value = jsonData.get(key);
-        if (value == null) {
-            throw new IllegalArgumentException("Value is null");
-        }
+        Object value = getValue(key);
 
         if (!(value instanceof Boolean)) {
             throw new IllegalArgumentException("Value is not of type Boolean");
         }
 
-        return (boolean) jsonData.get(key);
+        return (boolean) value;
     }
 
     public void put(String key, JsonObject nestedObject) {
@@ -103,16 +80,13 @@ public class JsonObject {
     }
 
     public JsonObject getJsonObject(String key) {
-        Object value = jsonData.get(key);
-        if (value == null) {
-            throw new IllegalArgumentException("Key does not exist or value is null");
-        }
+        Object value = getValue(key);
 
         if (!(value instanceof JsonObject)) {
             throw new IllegalArgumentException("Value is not of type JsonObject");
         }
 
-        return (JsonObject) jsonData.get(key);
+        return (JsonObject) value;
     }
 
     public void put(String key, JsonArray nestedArray) {
@@ -121,6 +95,33 @@ public class JsonObject {
         }
 
         jsonData.put(key, nestedArray);
+    }
+
+    public JsonArray getJsonArray(String key) {
+        Object value = getValue(key);
+
+        if (!(value instanceof JsonArray)) {
+            throw new IllegalArgumentException("Value is not of type JsonArray");
+        }
+
+        return (JsonArray) value;
+    }
+
+    public void putNull(String key) {
+        jsonData.put(key, null);
+    }
+
+    private Object getValue(String key) {
+        if (!jsonData.containsKey(key)) {
+            throw new IllegalArgumentException("Key does not exist");
+        }
+
+        Object value = jsonData.get(key);
+        if (value == null) {
+            throw new IllegalArgumentException("Value is null");
+        }
+
+        return value;
     }
 
     @Override

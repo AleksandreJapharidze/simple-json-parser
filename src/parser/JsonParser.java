@@ -1,6 +1,7 @@
 package parser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 class JsonParser {
     private static final JsonParser INSTANCE = new JsonParser();
@@ -14,7 +15,7 @@ class JsonParser {
 
     private JsonParser() {}
 
-    void parseObjectFromString(String jsonString, JsonObject object) {
+    HashMap<String, Object> getJsonObjectDataFromString(String jsonString) {
         this.jsonString = jsonString;
         this.position = 0;
 
@@ -24,7 +25,9 @@ class JsonParser {
             throw new IllegalArgumentException("JSON string doesn't represent a valid JSON");
         }
 
+        JsonObject object = new JsonObject();
         handleKeyParsing(object);
+        return object.getJsonData();
     }
 
     ArrayList<Object> getJsonArrayContentsFromString(String jsonString) {
