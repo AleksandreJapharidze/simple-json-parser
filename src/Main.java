@@ -96,79 +96,123 @@ void main() {
 
     String jsonString = """
             {
-              "status": "success",
-              "code": 200,
-              "user": {
-                "id": 1001,
-                "username": "dev_user",
-                "premium": false,
-                "profile": {
-                  "age": 28,
-                  "bio": null,
-                  "roles": ["developer", "tester"]
-                }
-              },
-              "settings": {
-                "theme": "dark",
-                "notifications": true,
-                "limits": {
-                  "daily": 100,
-                  "used": 37.15
-                }
-              },
-              "orders": [
-                {
-                  "orderId": 501,
-                  "paid": true,
-                  "items": [
-                    {"product": "Keyboard", "price": 79, "discount": null},
-                    {"product": "Mouse", "price": 25, "discount": 5},
-                    [[], [[{"very nested": {"null": "null"}}]], []]
-                  ],
-                  "tags": ["hardware", "peripherals"]
-                },
-                {
-                  "orderId": 502,
-                  "paid": false,
-                  "items": [],
-                  "tags": []
-                }
-              ],
-              "misc": [
-                null,
-                true,
-                0,
-                "done",
-                {"x": [{"y": []}, {}]}
-              ]
-            }""";
+               "application": {
+                 "name": "TestApp",
+                 "version": "2.4.1",
+                 "debug": false,
+                 "metadata": null
+               },
+               "servers": [
+                 {
+                   "id": 1,
+                   "host": "alpha",
+                   "ports": [80, 443],
+                   "enabled": true,
+                   "settings": {
+                     "timeout": 30,
+                     "retries": 3,
+                     "fallback": null
+                   }
+                 },
+                 {
+                   "id": 2,
+                   "host": "beta",
+                   "ports": [],
+                   "enabled": false,
+                   "settings": {}
+                 },
+                 {
+                   "id": 3,
+                   "host": "gamma",
+                   "ports": [8080],
+                   "enabled": true,
+                   "settings": {
+                     "timeout": 0,
+                     "retries": 0,
+                     "fallback": {
+                       "host": "alpha",
+                       "port": 443
+                     }
+                   }
+                 }
+               ],
+               "features": {
+                 "authentication": {
+                   "enabled": true,
+                   "methods": ["password", "token", "certificate"],
+                   "policy": {
+                     "maxAttempts": 5,
+                     "lockout": {
+                       "enabled": true,
+                       "duration": 300
+                     }
+                   }
+                 },
+                 "caching": {
+                   "enabled": false,
+                   "providers": [],
+                   "options": {}
+                 },
+                 "monitoring": {
+                   "enabled": true,
+                   "metrics": [
+                     {
+                       "name": "requests",
+                       "type": "counter",
+                       "labels": ["method", "status"]
+                     },
+                     {
+                       "name": "latency",
+                       "type": "histogram",
+                       "labels": []
+                     }
+                   ]
+                 }
+               },
+               "limits": {
+                 "workers": 16,
+                 "memory": 1073741824,
+                 "thresholds": [0.25, 0.5, 0.75, 1.0],
+                 "overrides": [
+                   null,
+                   0,
+                   false,
+                   "",
+                   [],
+                   {}
+                 ]
+               },
+               "users": [],
+               "permissions": {},
+               "shutdown": null
+             }""";
 
     parser.JsonObject jsonObject = new parser.JsonObject(jsonString);
     System.out.println(jsonObject);
 
-    String jsonString1 = """
-            [
-              1,
-              "two",
-              true,
-              null,
-              {
-                "id": 3,
-                "data": [4, 5, {"x": "y"}, []]
-              },
-              [
-                false,
-                null,
-                {"nested": []},
-                [1, 2, 3]
-              ],
-              {},
-              [],
-              ["string", {"key": "value"}, []],
-              [{}]
-            ]""";
-
-    JsonArray array = new JsonArray(jsonString1);
-
-    System.out.println(array);
+//    String jsonString1 = """
+//            [
+//              1,
+//              "two",
+//              true,
+//              null,
+//              {
+//                "id": 3,
+//                "data": [4, 5, {"x": "y"}, []]
+//              },
+//              [
+//                false,
+//                null,
+//                {"nested": []},
+//                [1, 2, 3]
+//              ],
+//              {},
+//              [],
+//              ["string", {"key": "value"}, []],
+//              [{}]
+//            ]""";
+//
+//    JsonArray array = new JsonArray(jsonString1);
+//
+//    System.out.println(array);
 }
