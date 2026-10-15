@@ -113,7 +113,7 @@ void main() {
                 "notifications": true,
                 "limits": {
                   "daily": 100,
-                  "used": 37
+                  "used": 37.15
                 }
               },
               "orders": [

@@ -1,12 +1,13 @@
 package parser;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 
 public class JsonObject {
     private final HashMap<String, Object> jsonData;
 
     public JsonObject(String jsonString) {
-        this.jsonData = JsonParser.getInstance().getJsonObjectDataFromString(jsonString);
+        this.jsonData = new JsonParser(jsonString).getJsonObjectDataFromString(jsonString);
     }
 
     JsonObject() {
@@ -35,22 +36,22 @@ public class JsonObject {
         return (String) value;
     }
 
-    public void put(String key, int integerValue) {
+    public void put(String key, BigDecimal numberValue) {
         if (key == null) {
             throw new IllegalArgumentException("Key must be of type String");
         }
 
-        jsonData.put(key, integerValue);
+        jsonData.put(key, numberValue);
     }
 
-    public int getInt(String key) {
+    public BigDecimal getInt(String key) {
         Object value = getValue(key);
 
-        if (!(value instanceof Integer)) {
+        if (!(value instanceof BigDecimal)) {
             throw new IllegalArgumentException("Value is not of type Integer");
         }
 
-        return (int) value;
+        return (BigDecimal) value;
     }
 
     public void put(String key, boolean booleanValue) {

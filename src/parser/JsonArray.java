@@ -1,12 +1,13 @@
 package parser;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class JsonArray {
     private final ArrayList<Object> elements;
 
     public JsonArray(String jsonString) {
-        this.elements = JsonParser.getInstance().getJsonArrayContentsFromString(jsonString);
+        this.elements = new JsonParser(jsonString).getJsonArrayContentsFromString(jsonString);
     }
 
     JsonArray() {
@@ -41,16 +42,16 @@ public class JsonArray {
         return (String) element;
     }
 
-    public void add(int intValue) {
-        elements.add(intValue);
+    public void add(BigDecimal numberValue) {
+        elements.add(numberValue);
     }
 
-    public int getInt(int index) {
+    public BigDecimal getNumber(int index) {
         Object element = getElement(index);
-        if (!(element instanceof Integer)) {
-            throw new IllegalArgumentException("Element at index " + index + " is not an Integer");
+        if (!(element instanceof BigDecimal)) {
+            throw new IllegalArgumentException("Element at index " + index + " is not a BigDecimal");
         }
-        return (Integer) element;
+        return (BigDecimal) element;
     }
 
     public void add(boolean booleanValue) {

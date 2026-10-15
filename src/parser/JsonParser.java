@@ -1,24 +1,19 @@
 package parser;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 class JsonParser {
-    private static final JsonParser INSTANCE = new JsonParser();
-
-    static JsonParser getInstance() {
-        return INSTANCE;
-    }
-
-    private String jsonString;
+    private final String jsonString;
     private int position;
 
-    private JsonParser() {}
-
-    HashMap<String, Object> getJsonObjectDataFromString(String jsonString) {
+    JsonParser(String jsonString) {
         this.jsonString = jsonString;
         this.position = 0;
+    }
 
+    HashMap<String, Object> getJsonObjectDataFromString(String jsonString) {
         skipUnmeaningfulChars();
 
         if (jsonString.charAt(position) != '{') {
@@ -31,9 +26,6 @@ class JsonParser {
     }
 
     ArrayList<Object> getJsonArrayContentsFromString(String jsonString) {
-        this.jsonString = jsonString;
-        this.position = 0;
-
         skipUnmeaningfulChars();
 
         if (jsonString.charAt(position) != '[') {
@@ -179,18 +171,18 @@ class JsonParser {
         return builder.toString();
     }
 
-    private int parseAndReturnNumber() {
+    private BigDecimal parseAndReturnNumber() {
         StringBuilder builder = new StringBuilder();
-        if (jsonString.charAt(position) == '-') {
-            builder.append(jsonString.charAt(position));
-            position++;
+        int currentPosition = position;
+        populateStringBuilderUntilValidJsonNumber(builder);
+
+        String numberString = builder.toString();
+        if (!JsonValidator.isValidJsonNumber(numberString)) {
+            throw new IllegalArgumentException("JSON string doesn't represent a valid JSON");
         }
-        while (Character.isDigit(jsonString.charAt(position))) {
-            builder.append(jsonString.charAt(position));
-            position++;
-        }
+
         try {
-            return Integer.parseInt(builder.toString());
+            return new BigDecimal(numberString);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("JSON string doesn't represent a valid JSON");
         }
@@ -303,6 +295,18 @@ class JsonParser {
                 jsonString.charAt(position) == '\t' ||
                 jsonString.charAt(position) == '\n' ||
                 jsonString.charAt(position) == '\r') {
+            position++;
+        }
+    }
+
+    private void populateStringBuilderUntilValidJsonNumber(StringBuilder builder) {
+        while ((jsonString.charAt(position) >= '0' && jsonString.charAt(position) <= '9') ||
+                jsonString.charAt(position) == '.' ||
+                jsonString.charAt(position) == 'e' ||
+                jsonString.charAt(position) == 'E' ||
+                jsonString.charAt(position) == '+' ||
+                jsonString.charAt(position) == '-') {
+            builder.append(jsonString.charAt(position));
             position++;
         }
     }
