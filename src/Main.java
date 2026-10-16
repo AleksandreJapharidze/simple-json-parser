@@ -190,29 +190,29 @@ void main() {
     parser.JsonObject jsonObject = new parser.JsonObject(jsonString);
     System.out.println(jsonObject);
 
-//    String jsonString1 = """
-//            [
-//              1,
-//              "two",
-//              true,
-//              null,
-//              {
-//                "id": 3,
-//                "data": [4, 5, {"x": "y"}, []]
-//              },
-//              [
-//                false,
-//                null,
-//                {"nested": []},
-//                [1, 2, 3]
-//              ],
-//              {},
-//              [],
-//              ["string", {"key": "value"}, []],
-//              [{}]
-//            ]""";
-//
-//    JsonArray array = new JsonArray(jsonString1);
-//
-//    System.out.println(array);
+    String jsonString1 = """
+            [
+              1,
+              "two",
+              true,
+              null,
+              {
+                "id": 3,
+                "data": [4, 5, {"x": "y"}, []]
+              },
+              [
+                false,
+                null,
+                {"nested": []},
+                [1, 2, 3]
+              ],
+              {},
+              [],
+              ["string", {"key": "value"}, []],
+              [{}, null, "..."]
+            ]""";
+
+    JsonArray array = new JsonArray(jsonString1);
+
+    System.out.println(array);
 }

@@ -20,9 +20,9 @@ class JsonParser {
             throw new IllegalArgumentException("JSON string doesn't represent a valid JSON");
         }
 
-        JsonObject object = new JsonObject();
+        HashMap<String, Object> object = new HashMap<>();
         handleKeyParsing(object);
-        return object.getJsonData();
+        return object;
     }
 
     ArrayList<Object> getJsonArrayContentsFromString(String jsonString) {
@@ -32,10 +32,10 @@ class JsonParser {
             throw new IllegalArgumentException("JSON string doesn't represent a valid JSON");
         }
 
-        return parseAndReturnArray().getElements();
+        return parseAndReturnArray();
     }
 
-    private void handleKeyParsing(JsonObject object) {
+    private void handleKeyParsing(HashMap<String, Object> object) {
         position++;
         skipUnmeaningfulChars();
 
@@ -60,104 +60,104 @@ class JsonParser {
         determineTypeAndMakeNextMove(key, object);
     }
 
-    private void handleObjectParsing(String key, JsonObject object) {
-        JsonObject nestedObject = new JsonObject();
+    private void handleObjectParsing(String key, HashMap<String, Object> object) {
+        HashMap<String, Object> nestedObject = new HashMap<>();
         handleKeyParsing(nestedObject);
 
         object.put(key, nestedObject);
         position++;
         skipUnmeaningfulChars();
 
-        decideNextActionForObjectParsing(object);
+        decideNextAction(object);
     }
 
-    private void handleObjectParsing(JsonArray array) {
-        JsonObject object = new JsonObject();
+    private void handleObjectParsing(ArrayList<Object> array) {
+        HashMap<String, Object> object = new HashMap<>();
         handleKeyParsing(object);
 
         array.add(object);
         position++;
         skipUnmeaningfulChars();
 
-        decideNextActionForArrayParsing(array);
+        decideNextAction(array);
     }
 
-    private void handleStringParsing(String key, JsonObject object) {
+    private void handleStringParsing(String key, HashMap<String, Object> object) {
         object.put(key, parseAndReturnString());
 
         position++;
         skipUnmeaningfulChars();
 
-        decideNextActionForObjectParsing(object);
+        decideNextAction(object);
     }
 
-    private void handleStringParsing(JsonArray array) {
+    private void handleStringParsing(ArrayList<Object> array) {
         array.add(parseAndReturnString());
 
         position++;
         skipUnmeaningfulChars();
 
-        decideNextActionForArrayParsing(array);
+        decideNextAction(array);
     }
 
-    private void handleNumberParsing(String key, JsonObject object) {
+    private void handleNumberParsing(String key, HashMap<String, Object> object) {
         object.put(key, parseAndReturnNumber());
 
         skipUnmeaningfulChars();
-        decideNextActionForObjectParsing(object);
+        decideNextAction(object);
     }
 
-    private void handleNumberParsing(JsonArray array) {
+    private void handleNumberParsing(ArrayList<Object> array) {
         array.add(parseAndReturnNumber());
 
         skipUnmeaningfulChars();
-        decideNextActionForArrayParsing(array);
+        decideNextAction(array);
     }
 
-    private void handleBooleanParsing(String key, JsonObject object) {
+    private void handleBooleanParsing(String key, HashMap<String, Object> object) {
         object.put(key, parseAndReturnBoolean());
 
         skipUnmeaningfulChars();
-        decideNextActionForObjectParsing(object);
+        decideNextAction(object);
     }
 
-    private void handleBooleanParsing(JsonArray array) {
+    private void handleBooleanParsing(ArrayList<Object> array) {
         array.add(parseAndReturnBoolean());
 
         skipUnmeaningfulChars();
-        decideNextActionForArrayParsing(array);
+        decideNextAction(array);
     }
 
-    private void handleNullParsing(String key, JsonObject object) {
+    private void handleNullParsing(String key, HashMap<String, Object> object) {
         checkIfNull();
-        object.putNull(key);
+        object.put(key, null);
 
         skipUnmeaningfulChars();
-        decideNextActionForObjectParsing(object);
+        decideNextAction(object);
     }
 
-    private void handleNullParsing(JsonArray array) {
+    private void handleNullParsing(ArrayList<Object> array) {
         checkIfNull();
-        array.addNull();
+        array.add(null);
 
         skipUnmeaningfulChars();
-        decideNextActionForArrayParsing(array);
+        decideNextAction(array);
     }
 
-    private void handleArrayParsing(String key, JsonObject object) {
+    private void handleArrayParsing(String key, HashMap<String, Object> object) {
         object.put(key, parseAndReturnArray());
 
         position++;
         skipUnmeaningfulChars();
-        decideNextActionForObjectParsing(object);
+        decideNextAction(object);
     }
 
-    private void handleArrayParsing(JsonArray array) {
+    private void handleArrayParsing(ArrayList<Object> array) {
         array.add(parseAndReturnArray());
 
         position++;
         skipUnmeaningfulChars();
-        decideNextActionForArrayParsing(array);
+        decideNextAction(array);
     }
 
     private String parseAndReturnString() {
@@ -173,7 +173,6 @@ class JsonParser {
 
     private BigDecimal parseAndReturnNumber() {
         StringBuilder builder = new StringBuilder();
-        int currentPosition = position;
         populateStringBuilderUntilValidJsonNumber(builder);
 
         String numberString = builder.toString();
@@ -208,8 +207,8 @@ class JsonParser {
         }
     }
 
-    private JsonArray parseAndReturnArray() {
-        JsonArray array = new JsonArray();
+    private ArrayList<Object> parseAndReturnArray() {
+        ArrayList<Object> array = new ArrayList<>();
 
         position++;
         skipUnmeaningfulChars();
@@ -222,7 +221,7 @@ class JsonParser {
         return array;
     }
 
-    private void decideNextActionForObjectParsing(JsonObject object) {
+    private void decideNextAction(HashMap<String, Object> object) {
         if (jsonString.charAt(position) == ',') {
             handleKeyParsing(object);
         } else if (jsonString.charAt(position) == '}') {
@@ -232,7 +231,7 @@ class JsonParser {
         }
     }
 
-    private void decideNextActionForArrayParsing(JsonArray array) {
+    private void decideNextAction(ArrayList<Object> array) {
         if (jsonString.charAt(position) == ',') {
             position++;
             skipUnmeaningfulChars();
@@ -244,39 +243,27 @@ class JsonParser {
         }
     }
 
-    private void determineTypeAndMakeNextMove(String key, JsonObject object) {
-        if (jsonString.charAt(position) == '\"') {
-            handleStringParsing(key, object);
-        } else if (Character.isDigit(jsonString.charAt(position)) || jsonString.charAt(position) == '-') {
-            handleNumberParsing(key, object);
-        } else if (jsonString.charAt(position) == 't' || jsonString.charAt(position) == 'f') {
-            handleBooleanParsing(key, object);
-        } else if (jsonString.charAt(position) == 'n') {
-            handleNullParsing(key, object);
-        } else if (jsonString.charAt(position) == '{') {
-            handleObjectParsing(key, object);
-        } else if (jsonString.charAt(position) == '[') {
-            handleArrayParsing(key, object);
-        } else {
-            throw new IllegalArgumentException("JSON string doesn't represent a valid JSON");
+    private void determineTypeAndMakeNextMove(String key, HashMap<String, Object> object) {
+        switch (determineType()) {
+            case STRING -> handleStringParsing(key, object);
+            case NUMBER -> handleNumberParsing(key, object);
+            case BOOLEAN -> handleBooleanParsing(key, object);
+            case NULL -> handleNullParsing(key, object);
+            case OBJECT -> handleObjectParsing(key, object);
+            case ARRAY -> handleArrayParsing(key, object);
+            default -> throw new IllegalArgumentException("JSON string doesn't represent a valid JSON");
         }
     }
 
-    private void determineTypeAndMakeNextMove(JsonArray array) {
-        if (jsonString.charAt(position) == '\"') {
-            handleStringParsing(array);
-        } else if (Character.isDigit(jsonString.charAt(position)) || jsonString.charAt(position) == '-') {
-            handleNumberParsing(array);
-        } else if (jsonString.charAt(position) == 't' || jsonString.charAt(position) == 'f') {
-            handleBooleanParsing(array);
-        } else if (jsonString.charAt(position) == 'n') {
-            handleNullParsing(array);
-        } else if (jsonString.charAt(position) == '{') {
-            handleObjectParsing(array);
-        } else if (jsonString.charAt(position) == '[') {
-            handleArrayParsing(array);
-        } else {
-            throw new IllegalArgumentException("JSON string doesn't represent a valid JSON");
+    private void determineTypeAndMakeNextMove(ArrayList<Object> array) {
+        switch (determineType()) {
+            case STRING -> handleStringParsing(array);
+            case NUMBER -> handleNumberParsing(array);
+            case BOOLEAN -> handleBooleanParsing(array);
+            case NULL -> handleNullParsing(array);
+            case OBJECT -> handleObjectParsing(array);
+            case ARRAY -> handleArrayParsing(array);
+            default -> throw new IllegalArgumentException("JSON string doesn't represent a valid JSON");
         }
     }
 
@@ -309,5 +296,29 @@ class JsonParser {
             builder.append(jsonString.charAt(position));
             position++;
         }
+    }
+
+    private JsonType determineType() {
+        char currentChar = jsonString.charAt(position);
+
+        if (currentChar == '\"') {
+            return JsonType.STRING;
+        } else if (Character.isDigit(currentChar) || currentChar == '-') {
+            return JsonType.NUMBER;
+        } else if (currentChar == 't' || currentChar == 'f') {
+            return JsonType.BOOLEAN;
+        } else if (currentChar == 'n') {
+            return JsonType.NULL;
+        } else if (currentChar == '{') {
+            return JsonType.OBJECT;
+        } else if (currentChar == '[') {
+            return JsonType.ARRAY;
+        } else {
+            throw new IllegalArgumentException("JSON string doesn't represent a valid JSON");
+        }
+    }
+
+    private enum JsonType {
+        STRING, NUMBER, BOOLEAN, NULL, OBJECT, ARRAY
     }
 }
