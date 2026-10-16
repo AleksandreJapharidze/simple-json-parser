@@ -10,6 +10,14 @@ public class JsonArray {
         this.elements = new JsonParser(jsonString).getJsonArrayContentsFromString(jsonString);
     }
 
+    JsonArray() {
+        this.elements = new ArrayList<>();
+    }
+
+    ArrayList<Object> getElements() {
+        return elements;
+    }
+
     public void add(JsonObject objectValue) {
         elements.add(objectValue);
     }

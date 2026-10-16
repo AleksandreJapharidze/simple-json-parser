@@ -10,6 +10,14 @@ public class JsonObject {
         this.jsonData = new JsonParser(jsonString).getJsonObjectDataFromString(jsonString);
     }
 
+    JsonObject() {
+        this.jsonData = new HashMap<>();
+    }
+
+    HashMap<String, Object> getJsonData() {
+        return jsonData;
+    }
+
     public void put(String key, String stringValue) {
         if (key == null) {
             throw new IllegalArgumentException("Key must be of type String");
