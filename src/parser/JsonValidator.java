@@ -1,6 +1,8 @@
 package parser;
 
 class JsonValidator {
+    private JsonValidator() {}
+
     static boolean isValidJsonNumber(String numberString) {
         if (numberString == null || numberString.isEmpty()) {
             return false;

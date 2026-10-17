@@ -20,9 +20,9 @@ class JsonParser {
             throw new IllegalArgumentException("JSON string doesn't represent a valid JSON");
         }
 
-        JsonObject object = new JsonObject();
+        HashMap<String, Object> object = new HashMap<>();
         handleKeyParsing(object);
-        return object.getJsonData();
+        return object;
     }
 
     ArrayList<Object> getJsonArrayContentsFromString(String jsonString) {
@@ -32,10 +32,10 @@ class JsonParser {
             throw new IllegalArgumentException("JSON string doesn't represent a valid JSON");
         }
 
-        return parseAndReturnArray().getElements();
+        return parseAndReturnArray();
     }
 
-    private void handleKeyParsing(JsonObject object) {
+    private void handleKeyParsing(HashMap<String, Object> object) {
         position++;
         skipUnmeaningfulChars();
 
@@ -60,29 +60,29 @@ class JsonParser {
         determineTypeAndMakeNextMove(key, object);
     }
 
-    private void handleObjectParsing(String key, JsonObject object) {
-        JsonObject nestedObject = new JsonObject();
-        handleKeyParsing(nestedObject);
+    private void handleObjectParsing(String key, HashMap<String, Object> object) {
+        HashMap<String, Object> nestedObjectData = new HashMap<>();
+        handleKeyParsing(nestedObjectData);
 
-        object.put(key, nestedObject);
+        object.put(key, new JsonObject(nestedObjectData));
         position++;
         skipUnmeaningfulChars();
 
         decideNextAction(object);
     }
 
-    private void handleObjectParsing(JsonArray array) {
-        JsonObject object = new JsonObject();
-        handleKeyParsing(object);
+    private void handleObjectParsing(ArrayList<Object> array) {
+        HashMap<String, Object> objectData = new HashMap<>();
+        handleKeyParsing(objectData);
 
-        array.add(object);
+        array.add(new JsonObject(objectData));
         position++;
         skipUnmeaningfulChars();
 
         decideNextAction(array);
     }
 
-    private void handleStringParsing(String key, JsonObject object) {
+    private void handleStringParsing(String key, HashMap<String, Object> object) {
         object.put(key, parseAndReturnString());
 
         position++;
@@ -91,7 +91,7 @@ class JsonParser {
         decideNextAction(object);
     }
 
-    private void handleStringParsing(JsonArray array) {
+    private void handleStringParsing(ArrayList<Object> array) {
         array.add(parseAndReturnString());
 
         position++;
@@ -100,60 +100,60 @@ class JsonParser {
         decideNextAction(array);
     }
 
-    private void handleNumberParsing(String key, JsonObject object) {
+    private void handleNumberParsing(String key, HashMap<String, Object> object) {
         object.put(key, parseAndReturnNumber());
 
         skipUnmeaningfulChars();
         decideNextAction(object);
     }
 
-    private void handleNumberParsing(JsonArray array) {
+    private void handleNumberParsing(ArrayList<Object> array) {
         array.add(parseAndReturnNumber());
 
         skipUnmeaningfulChars();
         decideNextAction(array);
     }
 
-    private void handleBooleanParsing(String key, JsonObject object) {
+    private void handleBooleanParsing(String key, HashMap<String, Object> object) {
         object.put(key, parseAndReturnBoolean());
 
         skipUnmeaningfulChars();
         decideNextAction(object);
     }
 
-    private void handleBooleanParsing(JsonArray array) {
+    private void handleBooleanParsing(ArrayList<Object> array) {
         array.add(parseAndReturnBoolean());
 
         skipUnmeaningfulChars();
         decideNextAction(array);
     }
 
-    private void handleNullParsing(String key, JsonObject object) {
+    private void handleNullParsing(String key, HashMap<String, Object> object) {
         checkIfNull();
-        object.putNull(key);
+        object.put(key, null);
 
         skipUnmeaningfulChars();
         decideNextAction(object);
     }
 
-    private void handleNullParsing(JsonArray array) {
+    private void handleNullParsing(ArrayList<Object> array) {
         checkIfNull();
-        array.addNull();
+        array.add(null);
 
         skipUnmeaningfulChars();
         decideNextAction(array);
     }
 
-    private void handleArrayParsing(String key, JsonObject object) {
-        object.put(key, parseAndReturnArray());
+    private void handleArrayParsing(String key, HashMap<String, Object> object) {
+        object.put(key, new JsonArray(parseAndReturnArray()));
 
         position++;
         skipUnmeaningfulChars();
         decideNextAction(object);
     }
 
-    private void handleArrayParsing(JsonArray array) {
-        array.add(parseAndReturnArray());
+    private void handleArrayParsing(ArrayList<Object> array) {
+        array.add(new JsonArray(parseAndReturnArray()));
 
         position++;
         skipUnmeaningfulChars();
@@ -208,21 +208,21 @@ class JsonParser {
         }
     }
 
-    private JsonArray parseAndReturnArray() {
-        JsonArray array = new JsonArray();
+    private ArrayList<Object> parseAndReturnArray() {
+        ArrayList<Object> arrayData = new ArrayList<>();
 
         position++;
         skipUnmeaningfulChars();
         if (jsonString.charAt(position) == ']') {
-            return array;
+            return arrayData;
         }
 
-        determineTypeAndMakeNextMove(array);
+        determineTypeAndMakeNextMove(arrayData);
 
-        return array;
+        return arrayData;
     }
 
-    private void decideNextAction(JsonObject object) {
+    private void decideNextAction(HashMap<String, Object> object) {
         if (jsonString.charAt(position) == ',') {
             handleKeyParsing(object);
         } else if (jsonString.charAt(position) == '}') {
@@ -232,7 +232,7 @@ class JsonParser {
         }
     }
 
-    private void decideNextAction(JsonArray array) {
+    private void decideNextAction(ArrayList<Object> array) {
         if (jsonString.charAt(position) == ',') {
             position++;
             skipUnmeaningfulChars();
@@ -244,7 +244,7 @@ class JsonParser {
         }
     }
 
-    private void determineTypeAndMakeNextMove(String key, JsonObject object) {
+    private void determineTypeAndMakeNextMove(String key, HashMap<String, Object> object) {
         switch (determineType()) {
             case STRING -> handleStringParsing(key, object);
             case NUMBER -> handleNumberParsing(key, object);
@@ -256,7 +256,7 @@ class JsonParser {
         }
     }
 
-    private void determineTypeAndMakeNextMove(JsonArray array) {
+    private void determineTypeAndMakeNextMove(ArrayList<Object> array) {
         switch (determineType()) {
             case STRING -> handleStringParsing(array);
             case NUMBER -> handleNumberParsing(array);

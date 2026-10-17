@@ -94,125 +94,129 @@ void main() {
     parser.JsonObject metadata = nextJsonObject.getJsonObject("metadata");
     System.out.println(metadata);
 
-//    String jsonString = """
-//            {
-//               "application": {
-//                 "name": "TestApp",
-//                 "version": "2.4.1",
-//                 "debug": false,
-//                 "metadata": null
-//               },
-//               "servers": [
-//                 {
-//                   "id": 1,
-//                   "host": "alpha",
-//                   "ports": [80, 443],
-//                   "enabled": true,
-//                   "settings": {
-//                     "timeout": 30,
-//                     "retries": 3,
-//                     "fallback": null
-//                   }
-//                 },
-//                 {
-//                   "id": 2,
-//                   "host": "beta",
-//                   "ports": [],
-//                   "enabled": false,
-//                   "settings": {}
-//                 },
-//                 {
-//                   "id": 3,
-//                   "host": "gamma",
-//                   "ports": [8080],
-//                   "enabled": true,
-//                   "settings": {
-//                     "timeout": 0,
-//                     "retries": 0,
-//                     "fallback": {
-//                       "host": "alpha",
-//                       "port": 443
-//                     }
-//                   }
-//                 }
-//               ],
-//               "features": {
-//                 "authentication": {
-//                   "enabled": true,
-//                   "methods": ["password", "token", "certificate"],
-//                   "policy": {
-//                     "maxAttempts": 5,
-//                     "lockout": {
-//                       "enabled": true,
-//                       "duration": 300
-//                     }
-//                   }
-//                 },
-//                 "caching": {
-//                   "enabled": false,
-//                   "providers": [],
-//                   "options": {}
-//                 },
-//                 "monitoring": {
-//                   "enabled": true,
-//                   "metrics": [
-//                     {
-//                       "name": "requests",
-//                       "type": "counter",
-//                       "labels": ["method", "status"]
-//                     },
-//                     {
-//                       "name": "latency",
-//                       "type": "histogram",
-//                       "labels": []
-//                     }
-//                   ]
-//                 }
-//               },
-//               "limits": {
-//                 "workers": 16,
-//                 "memory": 1073741824,
-//                 "thresholds": [0.25, 0.5, 0.75, 1.0],
-//                 "overrides": [
-//                   null,
-//                   0,
-//                   false,
-//                   "",
-//                   [],
-//                   {}
-//                 ]
-//               },
-//               "users": [],
-//               "permissions": {},
-//               "shutdown": null
-//             }""";
-//
-//    parser.JsonObject jsonObject = new parser.JsonObject(jsonString);
-//    System.out.println(jsonObject);
-//
-//    String jsonString1 = """
-//            [
-//              1,
-//              "two",
-//              true,
-//              null,
-//              {
-//                "id": 3,
-//                "data": [4, 5, {"x": "y"}, []]
-//              },
-//              [
-//                false,
-//                null,
-//                {"nested": []},
-//                [1, 2, 3]
-//              ],
-//              {},
-//              [],
-//              ["string", {"key": "value"}, []],
-//              [{}, null, "..."]
-//            ]""";
-//
-//    JsonArray array = new JsonArray(jsonString1);
-//
-//    System.out.println(array);
+    System.out.println();
+
+    String jsonString = """
+            {
+               "application": {
+                 "name": "TestApp",
+                 "version": "2.4.1",
+                 "debug": false,
+                 "metadata": null
+               },
+               "servers": [
+                 {
+                   "id": 1,
+                   "host": "alpha",
+                   "ports": [80, 443],
+                   "enabled": true,
+                   "settings": {
+                     "timeout": 30,
+                     "retries": 3,
+                     "fallback": null
+                   }
+                 },
+                 {
+                   "id": 2,
+                   "host": "beta",
+                   "ports": [],
+                   "enabled": false,
+                   "settings": {}
+                 },
+                 {
+                   "id": 3,
+                   "host": "gamma",
+                   "ports": [8080],
+                   "enabled": true,
+                   "settings": {
+                     "timeout": 0,
+                     "retries": 0,
+                     "fallback": {
+                       "host": "alpha",
+                       "port": 443
+                     }
+                   }
+                 }
+               ],
+               "features": {
+                 "authentication": {
+                   "enabled": true,
+                   "methods": ["password", "token", "certificate"],
+                   "policy": {
+                     "maxAttempts": 5,
+                     "lockout": {
+                       "enabled": true,
+                       "duration": 300
+                     }
+                   }
+                 },
+                 "caching": {
+                   "enabled": false,
+                   "providers": [],
+                   "options": {}
+                 },
+                 "monitoring": {
+                   "enabled": true,
+                   "metrics": [
+                     {
+                       "name": "requests",
+                       "type": "counter",
+                       "labels": ["method", "status"]
+                     },
+                     {
+                       "name": "latency",
+                       "type": "histogram",
+                       "labels": []
+                     }
+                   ]
+                 }
+               },
+               "limits": {
+                 "workers": 16,
+                 "memory": 1073741824,
+                 "thresholds": [0.25, 0.5, 0.75, 1.0],
+                 "overrides": [
+                   null,
+                   0,
+                   false,
+                   "",
+                   [],
+                   {}
+                 ]
+               },
+               "users": [],
+               "permissions": {},
+               "shutdown": null
+             }""";
+
+    parser.JsonObject jsonObject = new parser.JsonObject(jsonString);
+    System.out.println(jsonObject);
+
+    System.out.println();
+
+    String jsonString1 = """
+            [
+              1,
+              "two",
+              true,
+              null,
+              {
+                "id": 3,
+                "data": [4, 5, {"x": "y"}, []]
+              },
+              [
+                false,
+                null,
+                {"nested": []},
+                [1, 2, 3]
+              ],
+              {},
+              [],
+              ["string", {"key": "value"}, []],
+              [{}, null, "..."]
+            ]""";
+
+    JsonArray array = new JsonArray(jsonString1);
+
+    System.out.println(array);
 }
